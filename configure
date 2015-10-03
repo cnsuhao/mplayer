@@ -2557,29 +2557,6 @@ case "$host_arch" in
                 *) ;;
             esac
         fi
-        # gcc 4.2 and up supports POWER6
-        if test "$_cc_major" -ge "4" && test "$_cc_minor" -ge "2" || test "$_cc_major" -ge "5"; then
-            case "$proc" in
-                POWER6*) _march='-mcpu=power6' _mcpu='-mtune=power6' ;;
-                *) ;;
-            esac
-        fi
-        # gcc 4.5 and up supports POWER7
-        if test "$_cc_major" -ge "4" && test "$_cc_minor" -ge "5" || test "$_cc_major" -ge "5"; then
-            case "$proc" in
-                POWER7*) _march='-mcpu=power7' _mcpu='-mtune=power7' ;;
-                      def_vsx='#define HAVE_VSX 1' ;;
-                *) ;;
-            esac
-        fi
-        # gcc 4.9 and up supports POWER8
-        if test "$_cc_major" -ge "4" && test "$_cc_minor" -ge "9" || test "$_cc_major" -ge "5"; then
-            case "$proc" in
-                POWER8*) _march='-mcpu=power8' _mcpu='-mtune=power8' ;;
-                      def_vsx='#define HAVE_VSX 1' ;;
-                *) ;;
-            esac
-        fi
     fi
 
     if test -n "$_mcpu"; then
@@ -7114,13 +7091,13 @@ fi
 if test "$ffmpeg_so" = auto ; then
   ffmpeg_so=no
   if $_pkg_config --exists libavutil ; then
-    inc_ffmpeg=$($_pkg_config --cflags libswscale libswresample libavformat libavcodec libavutil)
-    ld_tmp=$($_pkg_config --libs libswscale libswresample libavformat libavcodec libavutil)
+    inc_ffmpeg=$($_pkg_config --cflags libswscale libavformat libavcodec libavutil)
+    ld_tmp=$($_pkg_config --libs libswscale libavformat libavcodec libavutil)
     header_check libavutil/avutil.h $inc_ffmpeg $ld_tmp &&
       extra_cflags="$extra_cflags $inc_ffmpeg" &&
       extra_ldflags="$extra_ldflags $ld_tmp" && ffmpeg_so=yes && ffmpeg=yes
-  elif header_check libavutil/avutil.h -lswscale -lswresample -lavformat -lavcodec -lavutil ; then
-    extra_ldflags="$extra_ldflags -lswscale -lswresample -lavformat -lavcodec -lavutil"
+  elif header_check libavutil/avutil.h -lswscale -lavformat -lavcodec -lavutil ; then
+    extra_ldflags="$extra_ldflags -lswscale -lavformat -lavcodec -lavutil"
     ffmpeg_so=yes
     ffmpeg=yes
   fi
@@ -8648,7 +8625,6 @@ CONFIG_LLAUDDSP= yes
 CONFIG_LLVIDDSP= yes
 CONFIG_LPC     = yes
 CONFIG_LSP     = yes
-CONFIG_LZF = yes
 CONFIG_LZO     = yes
 CONFIG_MDCT    = yes
 CONFIG_ME_CMP  = yes
@@ -9305,7 +9281,6 @@ $def_gnutls
 #define CONFIG_IDCTDSP 1
 #define CONFIG_IVIDSP 1
 #define CONFIG_LPC 1
-#define CONFIG_LZF 1
 #define CONFIG_LZO 1
 #define CONFIG_MDCT 1
 #define CONFIG_ME_CMP 1
