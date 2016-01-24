@@ -34,7 +34,6 @@ struct AVCodecTag {
 static const struct AVCodecTag mp_wav_tags[] = {
     { AV_CODEC_ID_ADPCM_4XM,         MKTAG('4', 'X', 'M', 'A') },
     { AV_CODEC_ID_ADPCM_ADX,         MKTAG('S', 'a', 'd', 'x') },
-    { AV_CODEC_ID_ADPCM_AICA,        MKTAG('A', 'I', 'C', 'A') },
 #if LIBAVUTIL_VERSION_MICRO >= 100
     { AV_CODEC_ID_ADPCM_AFC,         MKTAG('A', 'F', 'C', ' ') },
     { AV_CODEC_ID_ADPCM_DTK,         MKTAG('D', 'T', 'K', ' ') },
@@ -44,18 +43,11 @@ static const struct AVCodecTag mp_wav_tags[] = {
     { AV_CODEC_ID_ADPCM_EA_R1,       MKTAG('E', 'A', 'R', '1') },
     { AV_CODEC_ID_ADPCM_EA_R2,       MKTAG('E', 'A', 'R', '2') },
     { AV_CODEC_ID_ADPCM_EA_R3,       MKTAG('E', 'A', 'R', '3') },
-    { AV_CODEC_ID_ADPCM_EA_XAS,      MKTAG('E', 'X', 'A', 'S') },
     { AV_CODEC_ID_ADPCM_EA_MAXIS_XA, MKTAG('A', 'D', 'X', 'A') },
     { AV_CODEC_ID_ADPCM_IMA_EA_EACS, MKTAG('E', 'A', 'C', 'S') },
     { AV_CODEC_ID_ADPCM_IMA_ISS,     MKTAG('A', 'I', 'S', 'S') },
     { AV_CODEC_ID_ADPCM_IMA_WS,      MKTAG('A', 'I', 'W', 'S') },
-    { AV_CODEC_ID_ADPCM_SBPRO_2,     0x3253 },
-    { AV_CODEC_ID_ADPCM_SBPRO_3,     0x3353 },
-    { AV_CODEC_ID_ADPCM_SBPRO_4,     0x3453 },
     { AV_CODEC_ID_ADPCM_THP,         MKTAG('T', 'H', 'P', 'A') },
-#if LIBAVUTIL_VERSION_MICRO >= 100
-    { AV_CODEC_ID_ADPCM_THP_LE,      MKTAG('T', 'H', 'P', 'L') },
-#endif
     { AV_CODEC_ID_ADPCM_XA,          MKTAG('P', 'S', 'X', 'A') },
     { AV_CODEC_ID_AMR_NB,            MKTAG('n', 'b',   0,   0) },
     { AV_CODEC_ID_ATRAC1,            MKTAG('A', 'T', 'R', '1') },
@@ -63,19 +55,13 @@ static const struct AVCodecTag mp_wav_tags[] = {
     { AV_CODEC_ID_BINKAUDIO_RDFT,    MKTAG('B', 'A', 'U', '2') },
     { AV_CODEC_ID_BMV_AUDIO,         MKTAG('B', 'M', 'V', 'A') },
     { AV_CODEC_ID_COOK,              MKTAG('c', 'o', 'o', 'k') },
-    { AV_CODEC_ID_DSD_LSBF,          MKTAG('D', 'S', 'D', 'l') },
-    { AV_CODEC_ID_DSD_LSBF_PLANAR,   MKTAG('D', 'S', 'F', 'l') },
-    { AV_CODEC_ID_DSD_MSBF,          MKTAG('D', 'S', 'D', ' ') },
-    { AV_CODEC_ID_DSD_MSBF_PLANAR,   MKTAG('D', 'S', 'F', 'm') },
     { AV_CODEC_ID_DSICINAUDIO,       MKTAG('D', 'C', 'I', 'A') },
-    { AV_CODEC_ID_DSS_SP,            MKTAG('D', 'S', 'S', 's') },
     { AV_CODEC_ID_EAC3,              MKTAG('E', 'A', 'C', '3') },
 #if LIBAVUTIL_VERSION_MICRO >= 100
     { AV_CODEC_ID_EVRC,              MKTAG('s', 'e', 'v', 'c') },
     { AV_CODEC_ID_FFWAVESYNTH,       MKTAG('F', 'F', 'W', 'S') },
 #endif
     { AV_CODEC_ID_G723_1,            MKTAG('7', '2', '3', '1') },
-    { AV_CODEC_ID_INTERPLAY_ACM,     0x97280301 },
     { AV_CODEC_ID_INTERPLAY_DPCM,    MKTAG('I', 'N', 'P', 'A') },
     { AV_CODEC_ID_ILBC,              MKTAG('i', 'l', 'b', 'c') },
     { AV_CODEC_ID_MLP,               MKTAG('M', 'L', 'P', ' ') },
@@ -120,7 +106,6 @@ static const struct AVCodecTag mp_codecid_override_tags[] = {
 #if LIBAVUTIL_VERSION_MICRO >= 100
     { AV_CODEC_ID_ATRAC3P,           0xE923AABF},
 #endif
-    { AV_CODEC_ID_CPIA,              MKTAG('C', 'P', 'i', 'A') },
     { AV_CODEC_ID_DTS,               0x2001 },
     { AV_CODEC_ID_DVVIDEO,           MKTAG('d', 'v', 's', 'd') },
     { AV_CODEC_ID_EAC3,              MKTAG('E', 'A', 'C', '3') },
@@ -151,7 +136,6 @@ static const struct AVCodecTag mp_codecid_override_tags[] = {
     { AV_CODEC_ID_PCM_S32BE,         MKTAG('i', 'n', '3', '2') },
     { AV_CODEC_ID_PCM_S32LE,         1 },
     { AV_CODEC_ID_PCM_F32LE,         MKTAG('2', '3', 'l', 'f') },
-    { AV_CODEC_ID_PCM_ZORK,          MKTAG('z', 'r', 'k', 0x11) },
     { AV_CODEC_ID_MP2,               0x50 },
     { AV_CODEC_ID_MPEG2VIDEO,        MKTAG('M', 'P', 'G', '2') },
     { AV_CODEC_ID_TRUEHD,            MKTAG('T', 'R', 'H', 'D') },
@@ -183,7 +167,6 @@ static const struct AVCodecTag mp_bmp_tags[] = {
 #if LIBAVUTIL_VERSION_MICRO >= 100
     { AV_CODEC_ID_HEVC,              MKTAG('H', 'E', 'V', 'C') },
 #endif
-    { AV_CODEC_ID_HNM4_VIDEO,        MKTAG('H', 'N', 'M', '4') },
     { AV_CODEC_ID_IDCIN,             MKTAG('I', 'D', 'C', 'I') },
     { AV_CODEC_ID_INTERPLAY_VIDEO,   MKTAG('I', 'N', 'P', 'V') },
     { AV_CODEC_ID_JV,                MKTAG('F', 'F', 'J', 'V') },
@@ -197,7 +180,6 @@ static const struct AVCodecTag mp_bmp_tags[] = {
 #endif
     { AV_CODEC_ID_MXPEG,             MKTAG('M', 'X', 'P', 'G') },
     { AV_CODEC_ID_NUV,               MKTAG('N', 'U', 'V', '1') },
-    { AV_CODEC_ID_APNG,              MKTAG('a', 'p', 'n', 'g') },
     { AV_CODEC_ID_RL2,               MKTAG('R', 'L', '2', 'V') },
     { AV_CODEC_ID_ROQ,               MKTAG('R', 'o', 'Q', 'V') },
     { AV_CODEC_ID_RV10,              MKTAG('R', 'V', '1', '0') },
@@ -211,10 +193,8 @@ static const struct AVCodecTag mp_bmp_tags[] = {
     { AV_CODEC_ID_SVQ3,              MKTAG('S', 'V', 'Q', '3') },
     { AV_CODEC_ID_TMV,               MKTAG('t', 'm', 'v', '8') },
     { AV_CODEC_ID_TGV,               MKTAG('f', 'V', 'G', 'T') },
-    { AV_CODEC_ID_TGQ,               MKTAG('p', 'Q', 'G', 'T') },
     { AV_CODEC_ID_THP,               MKTAG('T', 'H', 'P', 'V') },
     { AV_CODEC_ID_TIERTEXSEQVIDEO,   MKTAG('T', 'S', 'E', 'Q') },
-    { AV_CODEC_ID_TQI,               MKTAG('p', 'I', 'Q', 'T') },
     { AV_CODEC_ID_TXD,               MKTAG('T', 'X', 'D', 'V') },
     { AV_CODEC_ID_VP6A,              MKTAG('V', 'P', '6', 'A') },
     { AV_CODEC_ID_VMDVIDEO,          MKTAG('V', 'M', 'D', 'V') },

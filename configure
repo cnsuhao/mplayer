@@ -1580,11 +1580,11 @@ libavmuxers=$(echo $libavmuxers_all)
 libavprotocols=$(echo $libavprotocols_all)
 libavfilters=$(echo $libavfilters_all)
 
-libavdecoders=$(filter_out_component decoder 'LIB[A-Z0-9_]* H264_QSV MJPEG_QSV MPEG2_MMAL MPEG2_QSV HEVC_QSV VC1_MMAL VC1_QSV H264_MMAL')
-libavencoders=$(filter_out_component encoder 'LIB[A-Z0-9_]* H264_QSV MJPEG_QSV MPEG2_QSV HEVC_QSV VC1_MMAL VC1_QSV NVENC[A-Z0-9_]* H264_NVENC[A-Z0-9_]* HEVC_NVENC[A-Z0-9_]* HAP')
+libavdecoders=$(filter_out_component decoder 'LIB[A-Z0-9_]* H264_QSV MJPEG_QSV MPEG2_QSV HEVC_QSV VC1_QSV H264_MMAL')
+libavencoders=$(filter_out_component encoder 'LIB[A-Z0-9_]* H264_QSV MJPEG_QSV MPEG2_QSV HEVC_QSV VC1_QSV NVENC[A-Z0-9_]* H264_NVENC[A-Z0-9_]* HEVC_NVENC[A-Z0-9_]* HAP')
 libavdemuxers=$(filter_out_component demuxer 'AVISYNTH LIB[A-Z0-9_]* REDIR')
-libavmuxers=$(filter_out_component muxer 'CHROMAPRINT LIB[A-Z0-9_]* RTP RTSP SAP')
-libavprotocols=$(filter_out_component protocol 'BLURAY FFRTMPCRYPT HTTPS LIB[A-Z0-9_]* TLS TLS_GNUTLS TLS_OPENSSL TLS_SECURETRANSPORT TLS_SCHANNEL')
+libavmuxers=$(filter_out_component muxer 'LIB[A-Z0-9_]* RTP RTSP SAP')
+libavprotocols=$(filter_out_component protocol 'BLURAY FFRTMPCRYPT HTTPS LIB[A-Z0-9_]* TLS TLS_GNUTLS TLS_OPENSSL TLS_SECURETRANSPORT')
 libavfilters=$(filter_out_component filter 'FREI0R[A-Z0-9_]* LIB[A-Z0-9_]* MP OCV')
 
 # second pass command line parsing for options needing local FFmpeg checkout
@@ -2557,29 +2557,6 @@ case "$host_arch" in
                 *) ;;
             esac
         fi
-        # gcc 4.2 and up supports POWER6
-        if test "$_cc_major" -ge "4" && test "$_cc_minor" -ge "2" || test "$_cc_major" -ge "5"; then
-            case "$proc" in
-                POWER6*) _march='-mcpu=power6' _mcpu='-mtune=power6' ;;
-                *) ;;
-            esac
-        fi
-        # gcc 4.5 and up supports POWER7
-        if test "$_cc_major" -ge "4" && test "$_cc_minor" -ge "5" || test "$_cc_major" -ge "5"; then
-            case "$proc" in
-                POWER7*) _march='-mcpu=power7' _mcpu='-mtune=power7'
-                      def_vsx='#define HAVE_VSX 1' ;;
-                *) ;;
-            esac
-        fi
-        # gcc 4.9 and up supports POWER8
-        if test "$_cc_major" -ge "4" && test "$_cc_minor" -ge "9" || test "$_cc_major" -ge "5"; then
-            case "$proc" in
-                POWER8*) _march='-mcpu=power8' _mcpu='-mtune=power8'
-                      def_vsx='#define HAVE_VSX 1' ;;
-                *) ;;
-            esac
-        fi
     fi
 
     if test -n "$_mcpu"; then
@@ -3416,7 +3393,7 @@ fi
 echores "$_kstat"
 
 
-for func in atanf cbrt cbrtf cosf expf exp2 exp2f isnan isinf llrint llrintf log2 log2f log10f lrint lrintf rint round roundf sinf trunc truncf erf; do
+for func in atanf cbrt cbrtf cosf expf exp2 exp2f isnan isinf llrint llrintf log2 log2f log10f lrint lrintf rint round roundf sinf trunc truncf; do
 echocheck $func
 eval _$func=no
 statement_check math.h "${func}(2.0)" && eval _$func=yes
@@ -3430,7 +3407,7 @@ fi
 done
 
 
-for func in atan2f fminf ldexpf powf hypot; do
+for func in atan2f fminf ldexpf powf; do
 echocheck $func
 eval _$func=no
 statement_check math.h "${func}(1.0,1.0)" && eval _$func=yes
@@ -4103,7 +4080,10 @@ int main(void) {
 }
 EOF
   _iconv=no
-  for ld_tmp in "" "-liconv" "-liconv $ld_dl" ; do
+  # NOTE: -L/usr/lib is a hack to avoid issues due to a
+  # broken libiconv that e.g. macports installs into /opt/local/lib
+  # which might get addded to the search path later by e.g. SDL
+  for ld_tmp in "" "-L/usr/lib -liconv" "-liconv" "-liconv $ld_dl" ; do
     cc_check $ld_tmp && extra_ldflags="$extra_ldflags $ld_tmp" &&
       ld_iconv="$ld_tmp" && _iconv=yes && break
   done
@@ -7111,13 +7091,13 @@ fi
 if test "$ffmpeg_so" = auto ; then
   ffmpeg_so=no
   if $_pkg_config --exists libavutil ; then
-    inc_ffmpeg=$($_pkg_config --cflags libswscale libswresample libavformat libavcodec libavutil)
-    ld_tmp=$($_pkg_config --libs libswscale libswresample libavformat libavcodec libavutil)
+    inc_ffmpeg=$($_pkg_config --cflags libswscale libavformat libavcodec libavutil)
+    ld_tmp=$($_pkg_config --libs libswscale libavformat libavcodec libavutil)
     header_check libavutil/avutil.h $inc_ffmpeg $ld_tmp &&
       extra_cflags="$extra_cflags $inc_ffmpeg" &&
       extra_ldflags="$extra_ldflags $ld_tmp" && ffmpeg_so=yes && ffmpeg=yes
-  elif header_check libavutil/avutil.h -lswscale -lswresample -lavformat -lavcodec -lavutil ; then
-    extra_ldflags="$extra_ldflags -lswscale -lswresample -lavformat -lavcodec -lavutil"
+  elif header_check libavutil/avutil.h -lswscale -lavformat -lavcodec -lavutil ; then
+    extra_ldflags="$extra_ldflags -lswscale -lavformat -lavcodec -lavutil"
     ffmpeg_so=yes
     ffmpeg=yes
   fi
@@ -8594,7 +8574,6 @@ CONFIG_SELECT_FILTER = no
 
 CONFIG_STATIC = yes
 SRC_PATH      = .
-DST_PATH      = $(pwd)/ffmpeg
 LIBPREF       = lib
 LIBSUF        = .a
 FULLNAME      = \$(NAME)\$(BUILDSUF)
@@ -8612,7 +8591,6 @@ CONFIG_AUDIO_FRAME_QUEUE = yes
 CONFIG_BLOCKDSP= yes
 CONFIG_BSWAPDSP= yes
 CONFIG_CABAC   = yes
-CONFIG_CHROMAPRINT = no
 CONFIG_DCT     = yes
 CONFIG_DWT     = yes
 CONFIG_ERROR_RESILIENCE = yes
@@ -8648,7 +8626,6 @@ CONFIG_LLAUDDSP= yes
 CONFIG_LLVIDDSP= yes
 CONFIG_LPC     = yes
 CONFIG_LSP     = yes
-CONFIG_LZF = yes
 CONFIG_LZO     = yes
 CONFIG_MDCT    = yes
 CONFIG_ME_CMP  = yes
@@ -9193,7 +9170,6 @@ $def_exp2
 $def_exp2f
 $def_fminf
 $def_getaddrinfo
-$def_hypot
 $def_isinf
 $def_isnan
 $def_ldexpf
@@ -9215,7 +9191,6 @@ $def_roundf
 $def_sinf
 $def_trunc
 $def_truncf
-$def_erf
 
 #define HAVE_INCOMPATIBLE_LIBAV_ABI 0
 #define HAVE_MSVCRT 0
@@ -9223,7 +9198,6 @@ $def_erf
 #define CONFIG_AUDIO_FLOAT 0
 #define CONFIG_AVCODEC 1
 #define CONFIG_AVSERVER 0
-#define CONFIG_CHROMAPRINT 0
 #define CONFIG_DXVA2 0
 #define CONFIG_FASTDIV 0
 #define CONFIG_FFSERVER 0
@@ -9250,7 +9224,6 @@ $def_gnutls
 #define HAVE_AS_FUNC 1
 #define HAVE_ASM_MOD_Q 1
 #define HAVE_ATOMICS_GCC 1
-#define HAVE_COPYSIGN 1
 #define HAVE_SYNC_VAL_COMPARE_AND_SWAP 1
 #define HAVE_ATOMICS_NATIVE 1
 #define HAVE_ATTRIBUTE_PACKED 1
@@ -9264,7 +9237,6 @@ $def_gnutls
 #define HAVE_LIBC_MSVCRT 0
 #define HAVE_MACH_MACH_TIME_H 0
 #define HAVE_MAPVIEWOFFILE 0
-#define HAVE_MIPSDSP 0
 #define HAVE_MIPSDSPR1 0
 #define HAVE_MIPSFPU 0
 #define HAVE_MM_EMPTY 0
@@ -9310,7 +9282,6 @@ $def_gnutls
 #define CONFIG_IDCTDSP 1
 #define CONFIG_IVIDSP 1
 #define CONFIG_LPC 1
-#define CONFIG_LZF 1
 #define CONFIG_LZO 1
 #define CONFIG_MDCT 1
 #define CONFIG_ME_CMP 1
@@ -9388,7 +9359,6 @@ echo "%define HAVE_ALIGNED_STACK 1" >> "$TMPS"
 echo "$(ff_config_enable "$arch_all" "$arch" "%" "ARCH")" >> "$TMPS"
 echo "$(ff_config_enable "$subarch_all" "$subarch" "%" "ARCH")" >> "$TMPS"
 echo "$(ff_config_enable "$cpuexts_all" "$cpuexts" "%" "HAVE" "_EXTERNAL")" >> "$TMPS"
-echo "$(ff_config_enable "$cpuexts_all" "$cpuexts" "%" "HAVE" "_INLINE")" >> "$TMPS"
 echo "$(ff_config_enable "$yasm_features_all" "$yasm_features" "%" "HAVE")" >> "$TMPS"
 echo "$(ff_config_enable "$libavdecoders_all"  "$libavdecoders" "%" "CONFIG")" >> "$TMPS"
 echo "$(ff_config_enable "$libavencoders_all"  "$libavencoders" "%" "CONFIG")" >> "$TMPS"
